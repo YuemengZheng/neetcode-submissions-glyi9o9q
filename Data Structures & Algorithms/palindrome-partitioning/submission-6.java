@@ -1,43 +1,44 @@
 class Solution {
-    String[] digitToString = new String[]{
-        null,
-        null,
-        "abc",
-        "def",
-        "ghi",
-        "jkl",
-        "mno",
-        "pqrs",
-        "tuv",
-        "wxyz"
-    };
-    List<String> res = new ArrayList<>();
-    StringBuilder path = new StringBuilder();
-    public List<String> letterCombinations(String digits) {
+    List<List<String>> res = new ArrayList<>();
+    List<String> path = new ArrayList<>();
+    public List<List<String>> partition(String s) {
         /*
-        1. map the number with the string
-        2. use backtrack to get all the letter combinations of the phone number
-        3. each level handle one digit, we have some letters to choose
-        4. when we reach the end of the string, collet the path
+        We use backtracking to partition the string into palindromic substrings.
+        At each step, we try every possible substring starting from the current index.
+        If a substring is a palindrome, we add it to the path and recurse on the rest of the string.
+        When we reach the end of the string, we collect the current partition.
+
+        The time complexity is O(n × 2ⁿ), because there are about 2ⁿ possible partitions, 
+        and for each partition we may spend O(n) time checking whether substrings are palindromes.
+
+        The space complexity is O(n) for the recursion stack and path, excluding the output.
         */
-        // digits = "" -> Output: [] 不然会返回[""]
-        if(digits.length() == 0){
-            return res;
-        }
-        backtrack(0, digits);
+        backtrack(0, s);
         return res;
     }
-    private void backtrack(int cur, String digits){
-        if(cur == digits.length()){
-            res.add(path.toString());
+    private void backtrack(int start, String s){
+        if(start == s.length()){
+            res.add(new ArrayList<>(path));
             return;
         }
 
-        String s = digitToString[digits.charAt(cur) - '0'];
-        for(char c : s.toCharArray()){
-            path.append(c);
-            backtrack(cur + 1, digits);
-            path.deleteCharAt(path.length() - 1);
+        for(int end = start; end <s.length(); end++){
+            if(isValid(start, end, s)){
+                String part = s.substring(start, end + 1);
+                path.add(part);
+                backtrack(end + 1, s);
+                path.remove(path.size() - 1);
+            }
         }
+    }
+    private boolean isValid(int i, int j, String s){
+        while(i < j){
+            if(s.charAt(i) != s.charAt(j)){
+                return false;
+            }
+            i++;
+            j--;
+        }
+        return true;
     }
 }
