@@ -1,0 +1,33 @@
+class Solution {
+    List<List<Integer>> res = new ArrayList<>();
+    List<Integer> path = new ArrayList<>();
+    public List<List<Integer>> combinationSum(int[] nums, int target) {
+        /*
+        I'll use backtracking. 
+        At each step, I choose a number from the remaining array and recurse. 
+        When sum equals target, I collect the result.
+
+        Time is O(n ^ target) — at each level we have n choices, 
+        and the tree height is at most target. 
+        Space is O(target) for the recursion stack.
+        */
+        backtrack(0, nums, target);
+        return res;
+    }
+    private void backtrack(int start, int[] nums, int target){
+        if(target == 0){
+            res.add(new ArrayList<>(path));
+            return;
+        }
+
+        if(target < 0){
+            return;
+        }
+
+        for(int i = start; i < nums.length; i++){
+            path.add(nums[i]);
+            backtrack(i, nums, target - nums[i]); // **** ERROR2 *****
+            path.remove(path.size() - 1);
+        }
+    }
+}
