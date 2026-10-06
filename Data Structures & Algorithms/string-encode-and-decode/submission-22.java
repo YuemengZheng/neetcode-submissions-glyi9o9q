@@ -1,0 +1,32 @@
+class Solution {
+
+    public String encode(List<String> strs) {
+        // need the start and the end of each string
+        // use three parts to represent a string
+        // len of the string + separator + original string
+        StringBuilder sb = new StringBuilder();
+        for(String s : strs) {
+            sb.append(s.length()).append('*').append(s);
+        }
+        return sb.toString();
+    }
+
+    public List<String> decode(String str) {
+        List<String> res = new ArrayList<>();
+        int i = 0;
+        while(i < str.length()) {
+            int j = i;
+            while(str.charAt(j) != '*') {
+                j++;
+            }
+            int len = Integer.parseInt(str.substring(i, j));
+            j++;
+
+            String s = str.substring(j, j + len);
+            res.add(s);
+
+            i = j + len;
+        }
+        return res;
+    }
+}
